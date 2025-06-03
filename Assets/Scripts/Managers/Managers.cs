@@ -5,18 +5,23 @@ using UnityEngine;
 public class Managers : MonoBehaviour 
 {
     static Managers instance;
-    public static Managers GetInst() { Init(); return instance; }
+    static Managers GetInst() { Init(); return instance; }
+
+    InputManager _input = new InputManager();
+    ResourceManager _resource = new ResourceManager();
+
+    public static InputManager Input { get { return GetInst()._input; } }
+    public static ResourceManager Resource { get { return GetInst()._resource; } }
 
     private void Start()
     {
         Init();
 
-        
     }
 
     private void Update()
     {
-        
+        _input.OnUpdate();
     }
 
     static void Init()
