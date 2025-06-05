@@ -7,11 +7,11 @@ public class Managers : MonoBehaviour
     static Managers instance;
     static Managers GetInst() { Init(); return instance; }
 
-    InputManager _input = new InputManager();
-    ResourceManager _resource = new ResourceManager();
+    InputManager input = new InputManager();
+    ResourceManager resource = new ResourceManager();
 
-    public static InputManager Input { get { return GetInst()._input; } }
-    public static ResourceManager Resource { get { return GetInst()._resource; } }
+    public static InputManager Input { get { return GetInst().input; } }
+    public static ResourceManager Resource { get { return GetInst().resource; } }
 
     private void Start()
     {
@@ -20,7 +20,7 @@ public class Managers : MonoBehaviour
 
     private void Update()
     {
-        _input.OnUpdate();
+        input.OnUpdate();
     }
 
     static void Init()
