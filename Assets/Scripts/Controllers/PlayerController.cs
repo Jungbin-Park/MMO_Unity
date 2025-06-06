@@ -17,9 +17,11 @@ public class PlayerController : MonoBehaviour
         //Managers.Input.KeyAction += OnKeyboard;
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
-    }
 
-    float wait_run_ratio = 0.0f;
+
+        // UI 생성
+        Managers.Resource.Instantiate("UI/UI_Button");
+    }
 
     public enum PlayerState
     {
@@ -51,19 +53,19 @@ public class PlayerController : MonoBehaviour
 
             // 부드러운 플레이어 회전
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);
-            transform.LookAt(destPos);
         }
 
         // 애니메이션
-        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 1.0f, 10.0f * Time.deltaTime);
         Animator anim = GetComponent<Animator>();
+        // 현재 게임 상태에 대한 정보를 넘겨준다
+        anim.SetFloat("speed", speed);
     }
 
     void UpdateIdle()
     {
         // 애니메이션
-        wait_run_ratio = Mathf.Lerp(wait_run_ratio, 0.0f, 10.0f * Time.deltaTime);
         Animator anim = GetComponent<Animator>();
+        anim.SetFloat("speed", 0);
     }
 
     void Update()
