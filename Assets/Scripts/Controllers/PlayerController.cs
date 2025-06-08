@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
 
         // UI »ý¼º
-        Managers.Resource.Instantiate("UI/UI_Button");
+        //Managers.Resource.Instantiate("UI/UI_Button");
     }
 
     public enum PlayerState

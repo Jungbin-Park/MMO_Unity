@@ -9,9 +9,11 @@ public class Managers : MonoBehaviour
 
     InputManager input = new InputManager();
     ResourceManager resource = new ResourceManager();
+    UIManager ui = new UIManager();
 
     public static InputManager Input { get { return GetInst().input; } }
     public static ResourceManager Resource { get { return GetInst().resource; } }
+    public static UIManager UI { get { return GetInst().ui; } }
 
     private void Start()
     {
