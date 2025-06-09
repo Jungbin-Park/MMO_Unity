@@ -31,12 +31,18 @@ public class UI_Button : UI_Popup
 
     private void Start()
     {
+        Init();
+    }
+
+    public override void Init()
+    {
+        // 부모 클래스의 Init 호출
+        base.Init();
+
         Bind<Button>(typeof(Buttons));
         Bind<TextMeshProUGUI>(typeof(Texts));
         Bind<GameObject>(typeof(GameObjects));
         Bind<Image>(typeof(Images));
-
-        
 
         GetButton((int)Buttons.PointButton).gameObject.AddUIEvent(OnButtonClicked);
 
