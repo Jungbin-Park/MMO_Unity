@@ -42,6 +42,19 @@ public class UIManager
 
     }
 
+    public T MakeSubItem<T>(Transform parent = null, string _name = null) where T : UI_Base
+    {
+        if (string.IsNullOrEmpty(_name))
+            _name = typeof(T).Name;
+
+        GameObject go = Managers.Resource.Instantiate($"UI/SubItem/{_name}");
+
+        if (parent != null)
+            go.transform.SetParent(parent);
+
+        return Util.GetOrAddComponenet<T>(go);
+    }
+
     public T ShowSceneUI<T>(string _name = null) where T : UI_Scene
     {
         if (string.IsNullOrEmpty(_name))

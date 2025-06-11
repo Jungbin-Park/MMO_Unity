@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UI_Popup : UI_Base
 {
-    public virtual void Init()
+    public override void Init()
     {
         // Sorting วิ
         Managers.UI.SetCanvas(gameObject, true);
