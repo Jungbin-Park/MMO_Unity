@@ -113,4 +113,10 @@ public class UIManager
         while(popupStack.Count > 0)
             ClosePopupUI();
     }
+
+    public void Clear()
+    {
+        CloseAllPopupUI();
+        sceneUI = null;
+    }
 }
