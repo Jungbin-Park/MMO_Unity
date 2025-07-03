@@ -6769,6 +6769,7 @@ GameObject:
   - component: {fileID: 9115591900740968903}
   - component: {fileID: 9115591900747861857}
   - component: {fileID: 1201623938007775314}
+  - component: {fileID: -3775530008680898816}
   m_Layer: 0
   m_Name: UnityChan
   m_TagString: Untagged
@@ -6803,7 +6804,7 @@ Animator:
   m_GameObject: {fileID: 9115591900740484583}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bcb817c0fd598a34a9dfe0d541a27c45, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -6826,7 +6827,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b62c539bfc6bb864895ec6c7302df01a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
+  speed: 10
+--- !u!114 &-3775530008680898816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9115591900740484583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2a210b65c860ea42a0f5890675595b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsUsing: 0
 --- !u!1 &9115591900740484585
 GameObject:
   m_ObjectHideFlags: 0

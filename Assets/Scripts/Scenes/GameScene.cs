@@ -11,6 +11,15 @@ public class GameScene : BaseScene
         SceneType = Define.Scene.Game;
 
         Managers.UI.ShowSceneUI<UI_Inven>();
+
+        Dictionary<int, Stat> dict = Managers.Data.statDict;
+    }
+
+    IEnumerator ExplodeAfterSeconds(float seconds)
+    {
+        Debug.Log("co Start");
+        yield return new WaitForSeconds(seconds);
+        Debug.Log("co end");
     }
 
     public override void Clear()

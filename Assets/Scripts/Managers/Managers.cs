@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour 
 {
-    static Managers instance;
-    static Managers GetInst() { Init(); return instance; }
+    static Managers instance;   // 유일성 보장
+    static Managers GetInst() { Init(); return instance; }  // 유일한 매니저를 갖고온다.
 
+    DataManager data = new DataManager();
     InputManager input = new InputManager();
+    PoolManager pool = new PoolManager();
     ResourceManager resource = new ResourceManager();
     SceneManagerEx scene = new SceneManagerEx();
     SoundManager sound = new SoundManager();
     UIManager ui = new UIManager();
 
+    public static DataManager Data { get { return GetInst().data; } }
     public static InputManager Input { get { return GetInst().input; } }
+    public static PoolManager Pool { get { return GetInst().pool; } }
     public static ResourceManager Resource { get { return GetInst().resource; } }
     public static SceneManagerEx Scene { get { return GetInst().scene; } }
     public static SoundManager Sound { get { return GetInst().sound; } }
@@ -43,7 +47,9 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
             instance = go.GetComponent<Managers>();
 
-            // SoundManager 초기화
+            // 매니저 초기화
+            instance.data.Init();
+            instance.pool.Init();
             instance.sound.Init();
         }
     }
@@ -54,5 +60,7 @@ public class Managers : MonoBehaviour
         Input.Clear();
         Scene.Clear();
         UI.Clear();
+
+        Pool.Clear();
     }
 }
