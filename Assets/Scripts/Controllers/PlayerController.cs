@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -38,18 +39,36 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 dir = destPos - transform.position;
 
-        if (dir.magnitude < 0.0001f)
+        if (dir.magnitude < 0.1f)
         {
             state = PlayerState.IDLE;
         }
         else
         {
+            // 1. NavMesh 이동
+            NavMeshAgent nma = gameObject.GetOrAddComponenet<NavMeshAgent>();
+            float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
+            nma.Move(dir.normalized * moveDist);
+
+            Debug.DrawRay(transform.position + Vector3.up * 0.5f, dir.normalized, Color.green);
+            if(Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1.0f, LayerMask.GetMask("Wall")))
+            {
+                state = PlayerState.IDLE;
+                return;
+            }
+
+            // 부드러운 플레이어 회전
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);
+
+            // 2. 기존 이동
+            /*
             // 플레이어 이동
             float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
             transform.position += dir.normalized * moveDist;
 
             // 부드러운 플레이어 회전
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);
+            */
         }
 
         // 애니메이션
@@ -118,12 +137,12 @@ public class PlayerController : MonoBehaviour
 
         // 카메라 -> 클릭 지점 레이캐스팅
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
+        //Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
         //LayerMask mask = LayerMask.GetMask("Monster");
         //int mask = (1 << 9) | (1 << 8);
 
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Wall")))
+        if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Ground")))
         {
             destPos = hit.point;
             state = PlayerState.MOVE;
