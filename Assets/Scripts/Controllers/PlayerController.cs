@@ -6,13 +6,12 @@ using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    float speed = 10.0f;
-
+    PlayerStat stat;
     Vector3 destPos;
 
     void Start()
     {
+        stat = gameObject.GetComponent<PlayerStat>();
         // InputManager에게 어떤 키가 눌리면 추가한 함수 실행요청(이벤트 구독 신청)
         //Managers.Input.KeyAction -= OnKeyboard; // 다른 곳에서 호출을 할 경우 두 번 추가되는 것에 대비해서 먼저 끊음
         //Managers.Input.KeyAction += OnKeyboard;
@@ -26,6 +25,7 @@ public class PlayerController : MonoBehaviour
         IDLE,
         MOVE,
         DEAD,
+        SKILL,
     }
 
     PlayerState state = PlayerState.IDLE;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
         {
             // 1. NavMesh 이동
             NavMeshAgent nma = gameObject.GetOrAddComponenet<NavMeshAgent>();
-            float moveDist = Mathf.Clamp(speed * Time.deltaTime, 0, dir.magnitude);
+            float moveDist = Mathf.Clamp(stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
             nma.Move(dir.normalized * moveDist);
 
             Debug.DrawRay(transform.position + Vector3.up * 0.5f, dir.normalized, Color.green);
@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         // 애니메이션
         Animator anim = GetComponent<Animator>();
         // 현재 게임 상태에 대한 정보를 넘겨준다
-        anim.SetFloat("speed", speed);
+        anim.SetFloat("speed", stat.MoveSpeed);
     }
 
     void UpdateIdle()
