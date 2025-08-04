@@ -29,11 +29,6 @@ public class UI_Button : UI_Popup
         ItemIcon,
     }
 
-    private void Start()
-    {
-        Init();
-    }
-
     public override void Init()
     {
         // 부모 클래스의 Init 호출

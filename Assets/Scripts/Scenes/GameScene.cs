@@ -13,6 +13,8 @@ public class GameScene : BaseScene
         Managers.UI.ShowSceneUI<UI_Inven>();
 
         Dictionary<int, Data.Stat> dict = Managers.Data.statDict;
+
+        gameObject.GetOrAddComponenet<CursorController>();
     }
 
     IEnumerator ExplodeAfterSeconds(float seconds)
