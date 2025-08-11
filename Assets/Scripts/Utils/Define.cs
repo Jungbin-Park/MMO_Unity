@@ -4,7 +4,16 @@ using UnityEngine;
 
 public class Define
 {
-    public enum Layer
+    public enum State
+
+    {
+        IDLE,
+        MOVE,
+        DEAD,
+        SKILL,
+    }
+
+public enum Layer
     {
         Monster = 8,
         Ground = 9,

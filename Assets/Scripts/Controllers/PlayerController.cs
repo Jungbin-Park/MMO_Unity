@@ -5,58 +5,20 @@ using UnityEngine;
 using UnityEngine.AI;
 using static Define;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : BaseController
 {
-    public enum PlayerState
-    {
-        IDLE,
-        MOVE,
-        DEAD,
-        SKILL,
-    }
-
     int mask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
     //LayerMask mask = LayerMask.GetMask("Monster");
     //int mask = (1 << 9) | (1 << 8);
 
     PlayerStat stat;
-    Vector3 destPos;
 
-    [SerializeField]
-    PlayerState state = PlayerState.IDLE;
-
-    GameObject lockTarget;
+    bool stopSkill = false;
 
     float attackSpeed = 0.5f;
+    Animator anim;
 
-    public PlayerState State
-    {
-        get { return state; }
-        set
-        {
-            state = value;
-
-            Animator anim = GetComponent<Animator>();
-            switch (state)
-            {
-                case PlayerState.IDLE:
-                    anim.CrossFade("Idle", 0.1f);
-                    break;
-                case PlayerState.MOVE:
-                    // 이동 속도에 따라 애니메이션 재생
-                    //anim.SetFloat("speed", stat.MoveSpeed);
-                    anim.CrossFade("Move", 0.1f);
-                    break;
-                case PlayerState.SKILL:
-                    anim.CrossFade("Attack", 0.1f, -1, 0.0f);
-                    break;
-                case PlayerState.DEAD:
-                    break;
-            }
-        }
-    }
-
-    void Start()
+    public override void Init()
     {
         stat = gameObject.GetComponent<PlayerStat>();
 
@@ -66,19 +28,15 @@ public class PlayerController : MonoBehaviour
         Managers.Input.MouseAction -= OnMouseEvent;
         Managers.Input.MouseAction += OnMouseEvent;
 
-        Animator anim = GetComponent<Animator>();
+        anim = GetComponent<Animator>();
         anim.SetFloat("AtkSpeed", attackSpeed);
 
         // HPBar 생성
-        Managers.UI.MakeWorldSpaceUI<UI_HPBar>(transform);
+        if (gameObject.GetComponentInChildren<UI_HPBar>() == null)
+            Managers.UI.MakeWorldSpaceUI<UI_HPBar>(transform);
     }
 
-    void UpdateDead()
-    {
-
-    }
-
-    void UpdateMove()
+    protected override void UpdateMove()
     {
         // =====
         // 공격
@@ -90,7 +48,7 @@ public class PlayerController : MonoBehaviour
             float distance = (destPos - transform.position).magnitude;
             if(distance <= 1)
             {
-                State = PlayerState.SKILL;
+                State = Define.State.SKILL;
                 return;
             }
         }
@@ -102,7 +60,7 @@ public class PlayerController : MonoBehaviour
         // 목적지 도착
         if (dir.magnitude < 0.1f)
         {
-            State = PlayerState.IDLE;
+            State = Define.State.IDLE;
         }
         // 이동
         else
@@ -118,7 +76,7 @@ public class PlayerController : MonoBehaviour
             {
                 // 마우스를 누르고 있는 상태가 아니면 다시 멈춤 상태로
                 if(!Input.GetMouseButton(1))
-                    State = PlayerState.IDLE;
+                    State = Define.State.IDLE;
                 return;
             }
 
@@ -138,11 +96,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void UpdateIdle()
-    {
-    }
-
-    void UpdateSkill()
+    protected override void UpdateSkill()
     {
         if(lockTarget != null)
         {
@@ -150,6 +104,21 @@ public class PlayerController : MonoBehaviour
             Quaternion quat = Quaternion.LookRotation(dir);
             transform.rotation = Quaternion.Lerp(transform.rotation, quat, 20 * Time.deltaTime);
         }
+
+
+        AnimatorStateInfo state = anim.GetCurrentAnimatorStateInfo(0);
+        if (state.IsName("Attack") && state.normalizedTime >= attackSpeed)
+        {
+            if (stopSkill)
+            {
+                State = Define.State.IDLE;
+            }
+            else
+            {
+                State = Define.State.SKILL;
+            }
+        }
+        
     }
 
     void OnHitEvent()
@@ -161,34 +130,6 @@ public class PlayerController : MonoBehaviour
             int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
             Debug.Log(damage);
             targetStat.HP -= damage;
-        }
-
-        if(stopSkill)
-        {
-            State = PlayerState.IDLE;
-        }
-        else
-        {
-            State = PlayerState.SKILL;
-        }
-    }
-
-    void Update()
-    {
-        switch (State)
-        {
-            case PlayerState.DEAD:
-                UpdateDead();
-                break;
-            case PlayerState.MOVE:
-                UpdateMove();
-                break;
-            case PlayerState.IDLE:
-                UpdateIdle();
-                break;
-            case PlayerState.SKILL:
-                UpdateSkill();
-                break;
         }
 
     }
@@ -222,18 +163,18 @@ public class PlayerController : MonoBehaviour
     //    moveToDest = false;
     //}
 
-    bool stopSkill = false;
+    
     void OnMouseEvent(Define.MouseEvent _evt)
     {
         switch(State)
         {
-            case PlayerState.IDLE:
+            case Define.State.IDLE:
                 OnMouseEvent_IdleMove(_evt);
                 break;
-            case PlayerState.MOVE:
+            case Define.State.MOVE:
                 OnMouseEvent_IdleMove(_evt);
                 break;
-            case PlayerState.SKILL:
+            case Define.State.SKILL:
                 {
                     if (_evt == Define.MouseEvent.PointerUp)
                         stopSkill = true;
@@ -256,7 +197,7 @@ public class PlayerController : MonoBehaviour
                     if (raycastHit)
                     {
                         destPos = hit.point;
-                        State = PlayerState.MOVE;
+                        State = Define.State.MOVE;
                         stopSkill = false;  
 
                         // 몬스터를 클릭했을 때
