@@ -1,3 +1,4 @@
+using Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,5 +34,28 @@ public class Stat : MonoBehaviour
         attack = 10;
         defense = 5;
         moveSpeed = 5.0f;
+    }
+
+    public virtual void OnAttacked(Stat _attackerStat)
+    {
+        int damage = Mathf.Max(0, _attackerStat.Attack - Defense);
+        HP -= damage;
+        if (hp <= 0)
+        {
+            hp = 0;
+            OnDead(_attackerStat);
+        }
+    }
+
+    protected virtual void OnDead(Stat _attackerStat)
+    {
+        // 처치한 오브젝트가 플레이어인 경우
+        PlayerStat playerStat = _attackerStat as PlayerStat;
+        if (playerStat != null)
+        {
+            playerStat.Exp += 15;       
+        }
+
+        Managers.Game.Despawn(gameObject);
     }
 }

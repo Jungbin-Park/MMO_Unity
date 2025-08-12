@@ -20,6 +20,8 @@ public class PlayerController : BaseController
 
     public override void Init()
     {
+        WorldObjectType = Define.WorldObject.Player;
+
         stat = gameObject.GetComponent<PlayerStat>();
 
         // InputManager에서 어떤 키가 눌렸는지 추가로 함수 등록 요청(이벤트 등록 요청)
@@ -65,10 +67,10 @@ public class PlayerController : BaseController
         // 이동
         else
         {
-            // 1. NavMesh 이동
-            NavMeshAgent nma = gameObject.GetOrAddComponenet<NavMeshAgent>();
-            float moveDist = Mathf.Clamp(stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
-            nma.Move(dir.normalized * moveDist);
+            // 1. NavMesh 이동(NavMesh Agent 컴포넌트 추가해야됨)
+            //NavMeshAgent nma = gameObject.GetOrAddComponenet<NavMeshAgent>();
+            //float moveDist = Mathf.Clamp(stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
+            //nma.Move(dir.normalized * moveDist);
 
             Debug.DrawRay(transform.position + Vector3.up * 0.5f, dir.normalized, Color.green);
             // 앞에 벽이 있으면 Wall에 부딪히면 멈춤
@@ -80,6 +82,8 @@ public class PlayerController : BaseController
                 return;
             }
 
+            float moveDist = Mathf.Clamp(stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
+            transform.position += dir.normalized * moveDist;
             // 캐릭터가 바라보는 방향 회전
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 20 * Time.deltaTime);
 
@@ -98,6 +102,7 @@ public class PlayerController : BaseController
 
     protected override void UpdateSkill()
     {
+        // 타겟 방향을 바라보게
         if(lockTarget != null)
         {
             Vector3 dir = lockTarget.transform.position - transform.position;
@@ -106,32 +111,31 @@ public class PlayerController : BaseController
         }
 
 
-        AnimatorStateInfo state = anim.GetCurrentAnimatorStateInfo(0);
-        if (state.IsName("Attack") && state.normalizedTime >= attackSpeed)
-        {
-            if (stopSkill)
-            {
-                State = Define.State.IDLE;
-            }
-            else
-            {
-                State = Define.State.SKILL;
-            }
-        }
+        //AnimatorStateInfo state = anim.GetCurrentAnimatorStateInfo(0);
+        //if (state.IsName("Attack") && state.normalizedTime >= attackSpeed)
+        //{
+            
+        //}
         
     }
 
     void OnHitEvent()
     {
+        // 공격
         if(lockTarget != null)
         {
             Stat targetStat = lockTarget.GetComponent<Stat>();
-            PlayerStat myStat = gameObject.GetComponent<PlayerStat>();
-            int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
-            Debug.Log(damage);
-            targetStat.HP -= damage;
+            targetStat.OnAttacked(stat);
         }
 
+        if (stopSkill)
+        {
+            State = Define.State.IDLE;
+        }
+        else
+        {
+            State = Define.State.SKILL;
+        }
     }
 
     //void OnKeyboard()

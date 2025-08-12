@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class Managers : MonoBehaviour 
 {
-    static Managers instance;   // À¯ÀÏ¼º º¸Àå
-    static Managers GetInst() { Init(); return instance; }  // À¯ÀÏÇÑ ¸Å´ÏÀú¸¦ °®°í¿Â´Ù.
+    static Managers instance;   // ìœ ì¼ì„± ë³´ì¥
+    static Managers GetInst() { Init(); return instance; }  // ìœ ì¼í•œ ë§¤ë‹ˆì €ë¥¼ ê°–ê³ ì˜¨ë‹¤.
 
+    #region Contents
+    GameManager game = new GameManager();
+
+    public static GameManager Game { get { return GetInst().game; } }
+    #endregion
+
+    #region Core
     DataManager data = new DataManager();
     InputManager input = new InputManager();
     PoolManager pool = new PoolManager();
@@ -22,6 +29,7 @@ public class Managers : MonoBehaviour
     public static SceneManagerEx Scene { get { return GetInst().scene; } }
     public static SoundManager Sound { get { return GetInst().sound; } }
     public static UIManager UI { get { return GetInst().ui; } }
+    #endregion
 
     private void Start()
     {
@@ -47,7 +55,7 @@ public class Managers : MonoBehaviour
             DontDestroyOnLoad(go);
             instance = go.GetComponent<Managers>();
 
-            // ¸Å´ÏÀú ÃÊ±âÈ­
+            // ë§¤ë‹ˆì € ì´ˆê¸°í™”
             instance.data.Init();
             instance.pool.Init();
             instance.sound.Init();

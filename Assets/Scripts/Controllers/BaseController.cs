@@ -13,6 +13,8 @@ public abstract class BaseController : MonoBehaviour
     [SerializeField]
     protected GameObject lockTarget;
 
+    public Define.WorldObject WorldObjectType { get; protected set; } = Define.WorldObject.UnKnown;
+
     public virtual Define.State State
     {
         get { return state; }
@@ -27,7 +29,7 @@ public abstract class BaseController : MonoBehaviour
                     anim.CrossFade("Idle", 0.1f);
                     break;
                 case Define.State.MOVE:
-                    // ÀÌµ¿ ¼Óµµ¿¡ µû¶ó ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+                    // ì´ë™ ì†ë„ì— ë”°ë¼ ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ
                     //anim.SetFloat("speed", stat.MoveSpeed);
                     anim.CrossFade("Move", 0.1f);
                     break;

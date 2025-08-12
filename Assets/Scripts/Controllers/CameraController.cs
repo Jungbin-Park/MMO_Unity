@@ -10,7 +10,9 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     public Vector3 camPos = new Vector3(0.0f, 6.0f, -5.0f);
     [SerializeField]
-    public GameObject player = null;
+    public GameObject target = null;
+
+    public void SetTarget(GameObject _target) {  target = _target; }
     
     void Start()
     {
@@ -19,25 +21,30 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        // Ä«¸Ş¶ó ÀÌµ¿Àº ÇÃ·¹ÀÌ¾îÀÇ ÀÌµ¿(Update)ÀÌ ³¡³­ ÈÄ¿¡ ÇØ¾ß ´ú´ú°Å¸²ÀÌ »ç¶óÁü
+        // ì¹´ë©”ë¼ ì´ë™ì€ í”Œë ˆì´ì–´ì˜ ì´ë™(Update)ì´ ëë‚œ í›„ì—(LateUpdate) í•´ì•¼ ëœëœê±°ë¦¼ì´ ì‚¬ë¼ì§
 
         if (mode == Define.CameraMode.QuarterView)
         {
-            // ÇÃ·¹ÀÌ¾î -> Ä«¸Ş¶ó ·¹ÀÌÄ³½ºÆÃ
+            if(!target.IsValid())
+            {
+                return;
+            }
+
+            // í”Œë ˆì´ì–´ -> ì¹´ë©”ë¼ ë ˆì´ìºìŠ¤íŒ…
             RaycastHit hit;
 
-            // ÇÃ·¹ÀÌ¾î¿Í Ä«¸Ş¶ó »çÀÌ¿¡ º®ÀÌ ÀÖÀ¸¸é
-            if(Physics.Raycast(player.transform.position, camPos, out hit, camPos.magnitude, LayerMask.GetMask("Wall")))
+            // í”Œë ˆì´ì–´ì™€ ì¹´ë©”ë¼ ì‚¬ì´ì— ë²½ì´ ìˆìœ¼ë©´
+            if(Physics.Raycast(target.transform.position, camPos, out hit, camPos.magnitude, LayerMask.GetMask("Wall")))
             {
-                // º® ¾ÕÀ¸·Î ÀÌµ¿
-                float dist = (hit.point - player.transform.position).magnitude - 0.8f;
-                transform.position = player.transform.position + camPos.normalized * dist;
+                // ë²½ ì•ìœ¼ë¡œ ì´ë™
+                float dist = (hit.point - target.transform.position).magnitude - 0.8f;
+                transform.position = target.transform.position + camPos.normalized * dist;
             }
             else
             {
-                // ÇÃ·¹ÀÌ¾î¸¦ ¹Ù¶óº¸´Â Ä«¸Ş¶ó ÀÌµ¿
-                transform.position = player.transform.position + camPos;
-                transform.LookAt(player.transform);
+                // í”Œë ˆì´ì–´ë¥¼ ë°”ë¼ë³´ëŠ” ì¹´ë©”ë¼ ì´ë™
+                transform.position = target.transform.position + camPos;
+                transform.LookAt(target.transform);
             }
 
             

@@ -10,10 +10,13 @@ namespace Data
     [Serializable]
     public class Stat
     {
-        // JsonÆÄÀÏÀÇ ÀÌ¸§°ú Çü½Ä µ¿ÀÏÇÏ°Ô
+        // JsoníŒŒì¼ì˜ ì´ë¦„ê³¼ í˜•ì‹ ë™ì¼í•˜ê²Œ
         public int level;
-        public int hp;
+        public int maxHp;
         public int attack;
+        public int defense;
+        public int moveSpeed;
+        public int totalExp;
     }
 
     [Serializable]
